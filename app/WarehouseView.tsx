@@ -323,7 +323,7 @@ export default function WarehouseView() {
   }
 
   function uniqueSizes(items: WarehouseBinItem[]) {
-    return [...new Set(items.map(itemSize).filter(Boolean))];
+    return Array.from(new Set(items.map(itemSize).filter(Boolean)));
   }
 
   function commitAdd() {
