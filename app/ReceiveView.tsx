@@ -80,8 +80,8 @@ function BoxesModal({
   onClose: () => void;
   onSave: () => void;
 }) {
-  const filled = counts.filter((count) => count !== null);
-  const total = filled.reduce((sum, count) => sum + Number(count || 0), 0);
+  const filled = counts.filter((count): count is number => count !== null);
+  const total = filled.reduce((sum: number, count) => sum + count, 0);
   return (
     <div className="refresh-modal" role="dialog" aria-modal="true" aria-labelledby="boxes-title">
       <div className="boxes-card">

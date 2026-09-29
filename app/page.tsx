@@ -217,7 +217,7 @@ export default function HomePage() {
             setExtraNotes(value);
           }}
           onBoxCount={(id, label, counts) => {
-            const total = counts.reduce((sum, count) => sum + Number(count || 0), 0);
+            const total = counts.reduce((sum: number, count) => sum + Number(count || 0), 0);
             const note = composeBoxSnippet(label, counts);
             setSavedNote("");
             setReceipt((current) =>
