@@ -4,7 +4,6 @@ import type { AppTab } from "./types";
 
 const TABS: { id: AppTab; label: string }[] = [
   { id: "receive", label: "Receive" },
-  { id: "putaway", label: "Put away" },
   { id: "warehouse", label: "Warehouse" },
 ];
 
@@ -16,7 +15,7 @@ export default function AppTabs({
   onChange: (tab: AppTab) => void;
 }) {
   return (
-    <nav className="app-tabs" aria-label="Warehouse steps">
+    <nav className="app-tabs" aria-label="App sections">
       {TABS.map((entry) => (
         <button
           key={entry.id}

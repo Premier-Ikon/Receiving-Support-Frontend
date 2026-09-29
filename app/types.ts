@@ -1,4 +1,4 @@
-export type AppTab = "receive" | "putaway" | "warehouse";
+export type AppTab = "receive" | "warehouse";
 
 export type WarehouseBinItem = {
   id: string;

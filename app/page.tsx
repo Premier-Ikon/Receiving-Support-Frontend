@@ -42,15 +42,6 @@ export default function HomePage() {
   const [generatingName, setGeneratingName] = useState("");
 
   const searchCopy = useMemo(() => {
-    if (tab === "putaway") {
-      return {
-        title: "Put away",
-        body: "After goods are received, assign a warehouse location so the team can find them later.",
-        submit: "Open put away",
-        label: "Receipt or PO",
-        placeholder: "PO-0000",
-      };
-    }
     if (tab === "warehouse") {
       return {
         title: "Warehouse",
