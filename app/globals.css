@@ -244,6 +244,39 @@ button {
   font-size: 13px;
 }
 
+.match-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.form-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #f2f2f7;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.form-pill.needs {
+  background: #fff4e5;
+  color: #c93400;
+}
+
+.form-pill.ready {
+  background: rgba(52, 199, 89, 0.12);
+  color: #1b7f3b;
+}
+
+.match-row:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
 .meta-card {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

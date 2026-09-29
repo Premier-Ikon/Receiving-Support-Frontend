@@ -75,6 +75,7 @@ export type MondayMatch = {
   eta: string;
   dateReceived: string | null;
   hasReceivingForm: boolean;
+  canGenerateForm?: boolean;
 };
 
 export const NOTE_OPTIONS = [

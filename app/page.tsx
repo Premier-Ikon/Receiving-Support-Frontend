@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import AppTabs from "./AppTabs";
-import ReceiveView, { RefreshModal } from "./ReceiveView";
+import ReceiveView, { GeneratingModal, RefreshModal } from "./ReceiveView";
 import WarehouseView from "./WarehouseView";
 import { API_URL } from "./env";
 import { composeBoxSnippet, composeFormNotes, upsertBoxSnippet, type AppTab, type MondayMatch, type ReceiptDetail } from "./types";
@@ -39,6 +39,7 @@ export default function HomePage() {
   const [extraNotes, setExtraNotes] = useState("");
   const [savedNote, setSavedNote] = useState("");
   const [refreshIn, setRefreshIn] = useState<number | null>(null);
+  const [generatingName, setGeneratingName] = useState("");
 
   const searchCopy = useMemo(() => {
     if (tab === "putaway") {
@@ -61,7 +62,7 @@ export default function HomePage() {
     }
     return {
       title: "Receive",
-      body: "Search PENDING LABELS/FORMS by task name or PO, then count what came in.",
+      body: "Search Monday by task or PO. If the receiving form is not made yet, generate it here, then count what came in.",
       submit: loading ? "Searching..." : "Search Monday",
       label: "Task name",
       placeholder: "Rising Sun",
@@ -80,6 +81,7 @@ export default function HomePage() {
       error?: string;
       matches?: MondayMatch[];
       receipt?: ReceiptDetail;
+      generated?: boolean;
     };
     if (!response.ok || !payload.success) {
       throw new Error(payload.error || "Could not talk to receiving API.");
@@ -113,6 +115,18 @@ export default function HomePage() {
     setError("");
     setSavedNote("");
     try {
+      if (item.canGenerateForm) {
+        setGeneratingName(item.name);
+        const payload = await api({ action: "generateForm", itemId: item.id });
+        setReceipt(payload.receipt || null);
+        setMatches(null);
+        setSelectedNotes([]);
+        setExtraNotes("");
+        return;
+      }
+      if (!item.hasReceivingForm) {
+        throw new Error("This task does not have a receiving form yet. It needs to be in Pending Purchasing to generate one.");
+      }
       const payload = await api({ action: "getReceipt", itemId: item.id });
       setReceipt(payload.receipt || null);
       setSelectedNotes([]);
@@ -120,6 +134,7 @@ export default function HomePage() {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not load receiving form.");
     } finally {
+      setGeneratingName("");
       setLoading(false);
     }
   }
@@ -154,6 +169,7 @@ export default function HomePage() {
     setExtraNotes("");
     setSavedNote("");
     setRefreshIn(null);
+    setGeneratingName("");
     setError("");
     setQuery("");
   }
@@ -235,6 +251,7 @@ export default function HomePage() {
           onSave={() => void saveReceipt()}
         />
         {error ? <div className="error-banner">{error}</div> : null}
+        {generatingName ? <GeneratingModal name={generatingName} /> : null}
         {refreshIn !== null ? (
           <RefreshModal
             note={savedNote}
@@ -275,6 +292,7 @@ export default function HomePage() {
           {error ? <div className="error-banner">{error}</div> : null}
         </section>
       </div>
+      {generatingName ? <GeneratingModal name={generatingName} /> : null}
       {refreshIn !== null ? (
         <RefreshModal
           note={savedNote}

@@ -166,6 +166,19 @@ export function RefreshModal({
   );
 }
 
+export function GeneratingModal({ name }: { name: string }) {
+  return (
+    <div className="refresh-modal" role="dialog" aria-modal="true" aria-labelledby="generate-title">
+      <div className="refresh-card">
+        <h2 id="generate-title">Generating form</h2>
+        <p>
+          Building the receiving form{name ? ` for ${name}` : ""} and uploading it to Monday. This can take a minute.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export default function ReceiveView({
   matches,
   receipt,
@@ -353,7 +366,7 @@ export default function ReceiveView({
           </button>
           <span />
         </div>
-        <h1>PENDING LABELS/FORMS</h1>
+        <h1>Receive</h1>
         <p className="progress-copy">
           {matches?.length ? `${matches.length} match${matches.length === 1 ? "" : "es"}` : "No matching tasks"}
         </p>
@@ -365,6 +378,7 @@ export default function ReceiveView({
               key={item.id}
               type="button"
               className="match-row"
+              disabled={busy}
               onClick={() => onOpen(item)}
             >
               <div className="item-copy">
@@ -372,13 +386,23 @@ export default function ReceiveView({
                 <p>
                   {item.client || "Client"} · {item.productType || "Type"} · PO {item.po || "—"} · Qty {item.qty || 0}
                 </p>
+                <div className="match-meta">
+                  <span className="form-pill">{item.group || "Monday"}</span>
+                  {item.canGenerateForm ? (
+                    <span className="form-pill needs">Generate form</span>
+                  ) : item.hasReceivingForm ? (
+                    <span className="form-pill ready">Ready to receive</span>
+                  ) : (
+                    <span className="form-pill">No form</span>
+                  )}
+                </div>
               </div>
             </button>
           ))}
         </section>
       ) : (
         <section className="list-card empty-state">
-          No tasks matched in PENDING LABELS/FORMS. Try part of the task name or PO number.
+          No tasks matched in Pending Purchasing or PENDING LABELS/FORMS. Try part of the task name or PO number.
         </section>
       )}
     </div>
